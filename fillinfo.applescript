@@ -1,0 +1,3 @@
+tell application "Safari"
+	set a to do JavaScript "document.getElementById('order_billing_name').value='Dinkar Khattar';document.getElementById('order_email').value='dinkarkhattar@gmail.com';document.getElementById('order_tel').value='3109185821';document.getElementById('bo').value='437 Gayley Avenue';document.getElementById('oba3').value='Unit 204';document.getElementById('order_billing_zip').value='90024';document.getElementById('order_billing_city').value='Los Angeles';document.getElementById('order_billing_state').value='CA';document.getElementById('rnsnckrn').value='4833160179598641';document.getElementById('credit_card_month').value='06';document.getElementById('credit_card_year').value='2021';" in document 1
+end tell
