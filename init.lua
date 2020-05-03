@@ -35,6 +35,11 @@ end
 
 -- hs.osascript.applescriptFromFile('addtocart.applescript')
 
+-- Navigate to the product
+hs.hotkey.bind({"cmd"}, "F", function()
+    hs.osascript.applescriptFromFile('navigate.applescript')
+end)
+
 hs.hotkey.bind({"cmd", "alt"}, "P", function()
     pos = hs.mouse.getAbsolutePosition()
     print(pos.x)
@@ -42,7 +47,7 @@ hs.hotkey.bind({"cmd", "alt"}, "P", function()
 end)
 
 hs.hotkey.bind({"cmd", "alt"}, "O", function()
-    moveAndSelect({x=1083.11328125,y=531.8203125}, "123")
+    moveAndSelectDown({x=1083.11328125,y=531.8203125}, "123")
 end)
 
 hs.hotkey.bind({"cmd", "alt"}, "F", function()
