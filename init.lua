@@ -2,6 +2,33 @@ local htmlparser = require("htmlparser")
 -- https://github.com/msva/lua-htmlparser
 -- https://www.lua.org/pil/contents.html
 
+addToCartPos = {x = 1010.7734375, y = 637.25}
+checkoutNowPos = {x = 434.70703125, y = 468.78515625}
+namePos = {x = 754.16796875, y = 490.46484375}
+emailPos = {x = 757.671875, y = 538.8828125}
+telPos = {x = 753.93359375, y = 589.02734375}
+addrPos = {x = 653.93359375, y = 632.83203125}
+aptPos = {x = 794.171875, y = 633.9375}
+zipPos = {x = 563.73046875, y = 687.28515625}
+cardNumPos = {x = 1075.15234375, y = 490.2265625}
+monPos = {x = 866.625, y = 537.6875}
+yearPos = {x = 932.73828125, y = 536.73046875}
+cvvPos = {x = 1082.59765625, y = 540.359375}
+agreeTermsPos = {x = 863.42578125, y = 733.90625}
+processPaymentPos = {x = 1100.15625, y = 813.26953125}
+
+nameText = "Dinkar Khattar"
+emailText = "dinkarkhattar@gmail.com"
+telText = "3109185821"
+addrText = "437 Gayley Avenue"
+aptText = "Unit 204"
+zipText = "90024"
+cardNumText = "1234123412341234"
+monText = "06"
+yearText = "2021"
+cvvText = "123"
+
+
 function reloadConfig(files)
     doReload = false
     for _,file in pairs(files) do
@@ -20,7 +47,7 @@ function moveAndType(coords, text)
     hs.mouse.setAbsolutePosition(coords)
     hs.eventtap.leftClick(coords)
     hs.eventtap.keyStrokes(text)
-    hs.timer.usleep(20000*string.len(text))
+    -- hs.timer.usleep(20000*string.len(text))
 end
 
 function moveAndSelectDown(coords, text)
@@ -85,17 +112,58 @@ function getProductURL(html, keywords, color)
     return ""
 end
 
--- Navigate to the product
-hs.hotkey.bind({"cmd", "alt"}, "T", function()
+function fillCheckout()
+    -- type in name
+    moveAndType(namePos, nameText)
+
+    --type in email
+    moveAndType(emailPos, emailText)
+    -- hs.timer.doAfter(100, moveAndType({x=569.37109375,y=529.26171875}, "dinkarkhattar@gmail.com"))
+
+    --type in tel
+    moveAndType(telPos, telText)
+
+    --type in add1
+    moveAndType(addrPos, addrText)
+
+    --type in add2
+    moveAndType(aptPos, aptText)
+
+    --type in zip
+    moveAndType(zipPos, zipText)
+
+    -- --type in city
+    -- moveAndType({x=697.54296875,y=672.625}, "Los Angeles")
+
+    --select state
+    -- moveAndSelect({x=799.7578125,y=674.17578125}, "CA")
+
+    -- type in number
+    moveAndType(cardNumPos, cardNumText)
+
+    --select in month
+    moveAndSelectDown(monPos, monText)
+
+    --select in year
+    moveAndSelectDown(yearPos, yearText)
+
+    --type in cvv
+    moveAndType(cvvPos, cvvText)
+
+    --select agree
+    moveAndClick(agreeTermsPos)
+end
+
+function navigateToProduct()
     -- hs.osascript.applescriptFromFile('navigate.applescript')
     hs.application.launchOrFocus("Google Chrome")
 
     -- Get HTML from product page
-    _, body, _ = hs.http.doRequest("https://www.supremenewyork.com/shop/all/pants", "GET")
+    _, body, _ = hs.http.doRequest("https://www.supremenewyork.com/shop/all/sweatshirts", "GET")
 
     -- Parse HTML to get product page
     -- TODO: figure out how to input this better
-    local href = getProductURL(body, "Metallic Rib", "Black")
+    local href = getProductURL(body, "Metallic Rib Hooded", "Fuchsia")
 
     -- Check if you found product
     if href == "" then
@@ -106,73 +174,59 @@ hs.hotkey.bind({"cmd", "alt"}, "T", function()
     local productURL = "https://www.supremenewyork.com"..href
     print(productURL)
     hs.urlevent.openURL(productURL)
+end
+
+--Trial function for debugging
+hs.hotkey.bind({"cmd", "alt"}, "O", function()
+    moveAndSelectDown({x=1083.11328125,y=531.8203125}, "123")
 end)
 
+--Print mouse position
 hs.hotkey.bind({"cmd", "alt"}, "P", function()
     pos = hs.mouse.getAbsolutePosition()
     print(pos.x)
     print(pos.y)
 end)
 
-hs.hotkey.bind({"cmd", "alt"}, "O", function()
-    moveAndSelectDown({x=1083.11328125,y=531.8203125}, "123")
+-- Navigate to the product
+hs.hotkey.bind({"cmd", "alt"}, "T", function()
+    navigateToProduct()
 end)
 
+--Move to add to cart
 hs.hotkey.bind({"cmd", "alt"}, "F", function()
-    hs.mouse.setAbsolutePosition({x=1003.6796875,y=615.08984375})
+    hs.mouse.setAbsolutePosition(addToCartPos)
 end)
 
+--Click on add to cart
 hs.hotkey.bind({"cmd", "alt"}, "G", function()
-    hs.eventtap.leftClick({x=1003.6796875,y=615.08984375})
+    hs.eventtap.leftClick(addToCartPos)
 end)
 
+--Move to checkout now
 hs.hotkey.bind({"cmd", "alt"}, "H", function()
-    hs.mouse.setAbsolutePosition({x=422.203125,y=461.48046875})
+    hs.mouse.setAbsolutePosition(checkoutNowPos)
 end)
 
+--Click on checkout now
 hs.hotkey.bind({"cmd", "alt"}, "J", function()
-    hs.eventtap.leftClick({x=422.203125,y=461.48046875})
+    hs.eventtap.leftClick(checkoutNowPos)
 end)
 
+--Fill checkout form
 hs.hotkey.bind({"cmd", "alt"}, "K", function()
-    -- type in name
-    moveAndType({x=578.73828125,y=482.234375}, "Dinkar Khattar")
+    fillCheckout()
+end)
 
-    --type in email
-    moveAndType({x=762.15625,y=529.26171875}, "dinkarkhattar@gmail.com")
-    -- hs.timer.doAfter(100, moveAndType({x=569.37109375,y=529.26171875}, "dinkarkhattar@gmail.com"))
-
-    --type in tel
-    moveAndType({x=788.0625,y=579.58203125}, "3109185821")
-
-    --type in add1
-    moveAndType({x=647.46484375,y=624.7265625}, "437 Gayley Avenue")
-
-    --type in add2
-    moveAndType({x=779.48046875,y=628.23828125}, "Unit 204")
-
-    --type in zip
-    moveAndType({x=563.61328125,y=673.1640625}, "90024")
-
-    -- --type in city
-    -- moveAndType({x=697.54296875,y=672.625}, "Los Angeles")
-
-    --select state
-    -- moveAndSelect({x=799.7578125,y=674.17578125}, "CA")
-
-    -- type in number
-    moveAndType({x=1044.33984375,y=480.8046875}, "1234123412341234")
-
-    --select in month
-    moveAndSelectDown({x=874.0703125,y=529.63671875}, "06")
-
-    --select in year
-    moveAndSelectDown({x=933.45703125,y=523.92578125}, "2021")
-
-    --type in cvv
-    moveAndType({x=1083.11328125,y=531.8203125}, "123")
-
-    --select agree
-    moveAndClick({x=867.22265625,y=721.06640625})
-
+--Full flow
+hs.hotkey.bind({"cmd", "alt"}, "M", function()
+    navigateToProduct()
+    hs.timer.usleep(500000)
+    hs.mouse.setAbsolutePosition(addToCartPos)
+    hs.eventtap.leftClick(addToCartPos)
+    hs.timer.usleep(600000)
+    hs.mouse.setAbsolutePosition(checkoutNowPos)
+    hs.eventtap.leftClick(checkoutNowPos)
+    hs.timer.usleep(600000)
+    fillCheckout()
 end)
