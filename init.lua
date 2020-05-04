@@ -1,4 +1,6 @@
 local htmlparser = require("htmlparser")
+-- https://github.com/msva/lua-htmlparser
+-- https://www.lua.org/pil/contents.html
 
 function reloadConfig(files)
     doReload = false
@@ -86,7 +88,7 @@ end
 -- Navigate to the product
 hs.hotkey.bind({"cmd", "alt"}, "T", function()
     -- hs.osascript.applescriptFromFile('navigate.applescript')
-    -- hs.application.launchOrFocus("Google Chrome")
+    hs.application.launchOrFocus("Google Chrome")
 
     -- Get HTML from product page
     _, body, _ = hs.http.doRequest("https://www.supremenewyork.com/shop/all/pants", "GET")
@@ -103,7 +105,7 @@ hs.hotkey.bind({"cmd", "alt"}, "T", function()
     
     local productURL = "https://www.supremenewyork.com"..href
     print(productURL)
-
+    hs.urlevent.openURL(productURL)
 end)
 
 hs.hotkey.bind({"cmd", "alt"}, "P", function()
