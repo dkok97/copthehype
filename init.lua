@@ -37,6 +37,52 @@ end
 
 -- hs.osascript.applescriptFromFile('addtocart.applescript')
 
+-- return href for a product from html body
+function getProductURL(html, keywords, color)
+
+    -- make lowercase
+    keywords = keywords:lower()
+    color    = color:lower()
+
+    local root = htmlparser.parse(body)
+    local elements = root("div.inner-article")
+
+    local items = root("div.inner-article")
+    for _, item in pairs(items) do
+
+        -- product names
+        names = item("div.product-name > a")
+        for _, n in pairs(names) do
+            local name = n:getcontent():lower()
+
+            -- see if you've found the product
+            if name:find(keywords) == 1 then
+                local colors = item("div.product-style > a")
+
+                for _, c in pairs(colors) do
+                    local curColor = c:getcontent():lower()
+
+                    -- see if you've found the color
+                    if curColor:find(color) == 1 then
+
+                        -- get href attribute from tag 
+                        for k, v in pairs(c.attributes) do
+                            if k == "href" then
+                                return v
+                            end
+                        end
+                    end
+                    
+                end
+
+            end
+        end
+    end
+
+    -- didn't find product
+    return ""
+end
+
 -- Navigate to the product
 hs.hotkey.bind({"cmd", "alt"}, "T", function()
     -- hs.osascript.applescriptFromFile('navigate.applescript')
@@ -45,19 +91,19 @@ hs.hotkey.bind({"cmd", "alt"}, "T", function()
     -- Get HTML from product page
     _, body, _ = hs.http.doRequest("https://www.supremenewyork.com/shop/all/pants", "GET")
 
-    --  use library
-    local root = htmlparser.parse(html)
-    local elements = root("div.inner-article")
+    -- Parse HTML to get product page
+    -- TODO: figure out how to input this better
+    local href = getProductURL(body, "Metallic Rib", "Black")
 
-    -- try to parse 'elements', TODO - doesn't work
-    for _,e in ipairs(elements) do
-        print(e.name)
-        local subs = e(subselectorstring)
-        for _,sub in pairs(subs) do
-            print("", sub.name)
-        end
+    -- Check if you found product
+    if href == "" then
+        print("Didn't find product")
+        return
     end
-    -- print(items)
+    
+    local productURL = "https://www.supremenewyork.com"..href
+    print(productURL)
+
 end)
 
 hs.hotkey.bind({"cmd", "alt"}, "P", function()
