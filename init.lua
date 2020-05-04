@@ -1,3 +1,5 @@
+local htmlparser = require("htmlparser")
+
 function reloadConfig(files)
     doReload = false
     for _,file in pairs(files) do
@@ -36,8 +38,26 @@ end
 -- hs.osascript.applescriptFromFile('addtocart.applescript')
 
 -- Navigate to the product
-hs.hotkey.bind({"cmd"}, "F", function()
-    hs.osascript.applescriptFromFile('navigate.applescript')
+hs.hotkey.bind({"cmd", "alt"}, "T", function()
+    -- hs.osascript.applescriptFromFile('navigate.applescript')
+    -- hs.application.launchOrFocus("Google Chrome")
+
+    -- Get HTML from product page
+    _, body, _ = hs.http.doRequest("https://www.supremenewyork.com/shop/all/pants", "GET")
+
+    --  use library
+    local root = htmlparser.parse(html)
+    local elements = root("div.inner-article")
+
+    -- try to parse 'elements', TODO - doesn't work
+    for _,e in ipairs(elements) do
+        print(e.name)
+        local subs = e(subselectorstring)
+        for _,sub in pairs(subs) do
+            print("", sub.name)
+        end
+    end
+    -- print(items)
 end)
 
 hs.hotkey.bind({"cmd", "alt"}, "P", function()
