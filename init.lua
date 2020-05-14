@@ -17,6 +17,9 @@ cvvPos = {x = 1082.59765625, y = 540.359375}
 agreeTermsPos = {x = 863.42578125, y = 733.90625}
 processPaymentPos = {x = 1100.15625, y = 813.26953125}
 
+-- THE REAL ONE, uncomment when you want to buy
+-- processPaymentPos = {x=977.69140625, y=740.4609375}
+
 nameText = "Dinkar Khattar"
 emailText = "dinkarkhattar@gmail.com"
 telText = "310 918 5821"
@@ -47,15 +50,18 @@ function moveAndType(coords, text)
     hs.mouse.setAbsolutePosition(coords)
     hs.eventtap.leftClick(coords)
     hs.eventtap.keyStrokes(text)
-    -- hs.timer.usleep(20000*string.len(text))
+    hs.timer.usleep(60000)
 end
 
-function moveAndSelectDown(coords, text)
+function moveAndSelectDown(coords, text, times)
     hs.mouse.setAbsolutePosition(coords)
     hs.eventtap.leftClick(coords)
     -- hs.eventtap.keyStrokes(text)
     -- hs.timer.usleep(20000*string.len(text))
-    hs.eventtap.keyStroke({}, "down")
+    for i=1,times do
+        hs.eventtap.keyStroke({}, "down")
+    end
+    
     hs.eventtap.keyStroke({}, "return")
 end
 
@@ -123,6 +129,8 @@ function fillCheckout()
     --type in tel
     moveAndType(telPos, telText)
 
+    print("hi")
+
     --type in add1
     moveAndType(addrPos, addrText)
 
@@ -142,10 +150,10 @@ function fillCheckout()
     moveAndType(cardNumPos, cardNumText)
 
     --select in month
-    moveAndSelectDown(monPos, monText)
+    moveAndSelectDown(monPos, monText, 1)
 
     --select in year
-    moveAndSelectDown(yearPos, yearText)
+    moveAndSelectDown(yearPos, yearText, 4)
 
     --type in cvv
     moveAndType(cvvPos, cvvText)
@@ -162,11 +170,14 @@ function navigateToProduct()
     hs.application.launchOrFocus("Google Chrome")
 
     -- Get HTML from product page
-    _, body, _ = hs.http.doRequest("https://www.supremenewyork.com/shop/all/sweatshirts", "GET")
+    local category = "tops_sweaters"
+    local categoryURL = "https://www.supremenewyork.com/shop/all/"..category
+    _, body, _ = hs.http.doRequest(categoryURL, "GET")
 
     -- Parse HTML to get product page
     -- TODO: figure out how to input this better
-    local href = getProductURL(body, "Digital Logo Hooded Sweatshirt", "Black")
+    -- local href = getProductURL(body, "Johnston Frog", "Mint")
+    local href = getProductURL(body, "Contrast", "White")
 
     -- Check if you found product
     if href == "" then
