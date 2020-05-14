@@ -90,15 +90,19 @@ function getProductURL(html, keywords, color)
         for _, n in pairs(names) do
             local name = n:getcontent():lower()
 
+            print(name, name:find(keywords))
+
             -- see if you've found the product
-            if name:find(keywords) == 1 then
+            if name:find(keywords) ~= nil then
+                print(name)
                 local colors = item("div.product-style > a")
 
                 for _, c in pairs(colors) do
                     local curColor = c:getcontent():lower()
 
+                    print(curColor)
                     -- see if you've found the color
-                    if curColor:find(color) == 1 then
+                    if curColor:find(color) ~= nil then
 
                         -- get href attribute from tag 
                         for k, v in pairs(c.attributes) do
@@ -167,14 +171,13 @@ function navigateToProduct()
     hs.application.launchOrFocus("Google Chrome")
 
     -- Get HTML from product page
-    local category = "tops_sweaters"
+    local category = "t-shirts"
     local categoryURL = "https://www.supremenewyork.com/shop/all/"..category
     _, body, _ = hs.http.doRequest(categoryURL, "GET")
 
     -- Parse HTML to get product page
     -- TODO: figure out how to input this better
-    -- local href = getProductURL(body, "Johnston Frog", "Mint")
-    local href = getProductURL(body, "Contrast", "White")
+    local href = getProductURL(body, "johnston frog", "Teal")
 
     -- Check if you found product
     if href == "" then
