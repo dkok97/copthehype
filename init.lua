@@ -2,7 +2,7 @@ local htmlparser = require("htmlparser")
 -- https://github.com/msva/lua-htmlparser
 -- https://www.lua.org/pil/contents.html
 
-addToCartPos = {x = 1010.7734375, y = 637.25}
+addToCartPos = {x = 1010.7734375, y = 634.25}
 checkoutNowPos = {x = 434.70703125, y = 468.78515625}
 namePos = {x = 754.16796875, y = 490.46484375}
 emailPos = {x = 757.671875, y = 538.8828125}
@@ -19,7 +19,7 @@ processPaymentPos = {x = 1100.15625, y = 813.26953125}
 
 nameText = "Dinkar Khattar"
 emailText = "dinkarkhattar@gmail.com"
-telText = "3109185821"
+telText = "310 918 5821"
 addrText = "437 Gayley Avenue"
 aptText = "Unit 204"
 zipText = "90024"
@@ -152,6 +152,9 @@ function fillCheckout()
 
     --select agree
     moveAndClick(agreeTermsPos)
+
+    --process payment
+    moveAndClick(processPaymentPos)
 end
 
 function navigateToProduct()
@@ -163,7 +166,7 @@ function navigateToProduct()
 
     -- Parse HTML to get product page
     -- TODO: figure out how to input this better
-    local href = getProductURL(body, "Metallic Rib Hooded", "Fuchsia")
+    local href = getProductURL(body, "Digital Logo Hooded Sweatshirt", "Black")
 
     -- Check if you found product
     if href == "" then
@@ -214,8 +217,14 @@ hs.hotkey.bind({"cmd", "alt"}, "J", function()
 end)
 
 --Fill checkout form
-hs.hotkey.bind({"cmd", "alt"}, "K", function()
+hs.hotkey.bind({"cmd", "alt"}, "X", function()
     fillCheckout()
+end)
+
+--Check out now flow
+hs.hotkey.bind({"cmd", "alt"}, "Z", function()
+    hs.mouse.setAbsolutePosition(checkoutNowPos)
+    hs.eventtap.leftClick(checkoutNowPos)
 end)
 
 --Full flow
