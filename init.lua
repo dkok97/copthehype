@@ -174,23 +174,29 @@ function navigateToProduct()
     hs.application.launchOrFocus("Google Chrome")
 
     -- Get HTML from product page
-    local category = "t-shirts"
-    local categoryURL = "https://www.supremenewyork.com/shop/all/"..category
-    _, body, _ = hs.http.doRequest(categoryURL, "GET")
+    local categories = {"t-shirts", "tops_sweaters"}
+    for i = 1, 2 do
+        local category = categories[i]
+        local categoryURL = "https://www.supremenewyork.com/shop/all/"..category
+        _, body, _ = hs.http.doRequest(categoryURL, "GET")
 
-    -- Parse HTML to get product page
-    -- TODO: figure out how to input this better
-    local href = getProductURL(body, "johnston frog", "Teal")
+        -- Parse HTML to get product page
+        -- TODO: figure out how to input this better
+        local href = getProductURL(body, "invert", "yellow")
 
-    -- Check if you found product
-    if href == "" then
-        print("Didn't find product")
-        return
+        -- Check if you found product
+        if href ~= "" then
+            local productURL = "https://www.supremenewyork.com"..href
+            print(productURL)
+            hs.urlevent.openURL(productURL)
+            return
+        end
+
     end
-    
-    local productURL = "https://www.supremenewyork.com"..href
-    print(productURL)
-    hs.urlevent.openURL(productURL)
+
+    print("Didn't find product")
+    return
+
 end
 
 --Trial function for debugging
