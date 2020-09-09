@@ -1,10 +1,26 @@
 import sel
 import time
 import re
+import cv2
+import numpy as np
 
 driver = ""
 
 regex = r"(.*)/(.*)$"
+
+def genMasks(path, cart, remove):
+    window = driver.get_window_size()
+    im = cv2.imread("{}_cart.png".format(path))
+
+    pageImg = np.zeros((window["height"], window["width"]), np.uint8)
+    cv2.rectangle(pageImg, (cart["x"], cart["y"]), (cart["x"] + cart["width"], cart["y"] + cart["height"]), (255, 0, 0), -1)
+    cv2.imshow("{}_cart.png".format(path), pageImg)
+    cv2.waitKey(0)
+    # masked_data = cv2.bitwise_and(im, im, mask=pageImg)
+
+    # cv2.imshow("{}_cart.png".format(path), masked_data)
+    # cv2.waitKey(0)
+    print(cart, remove)
 
 def screenshot(url, num, cat):
     """
@@ -14,7 +30,7 @@ def screenshot(url, num, cat):
     """
     global driver
 
-    path = "./images/" + cat + str(num)
+    path = "./images/{}{}".format(cat, str(num))
 
     driver.execute_script(("window.open('{}', 'new_window')").format(url))
     driver.switch_to.window(driver.window_handles[1])
@@ -29,23 +45,26 @@ def screenshot(url, num, cat):
         driver.implicitly_wait(10)
         return False
 
-    driver.save_screenshot(path + "_cart.png") 
+    driver.save_screenshot("{}_cart.png".format(path)) 
 
     driver.implicitly_wait(10)
 
     add = driver.find_element_by_xpath("""//*[@id="add-remove-buttons"]/input""")
+    addRect = add.rect
     add.click()
 
-    driver.save_screenshot(path + "_checkout.png")
+    driver.save_screenshot("{}_checkout.png".format(path))
 
     # TODO: doesn't work, cart keeps growing lol
     remove = driver.find_element_by_xpath("""//*[@id="add-remove-buttons"]/input""")
+    removeRect = remove.rect
     driver.execute_script("arguments[0].click();", remove)
     remove.click()
 
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
+    genMasks(path, addRect, removeRect)
     return True
 
 
@@ -57,7 +76,7 @@ def scrape():
     global driver
 
     url = "https://www.supremenewyork.com"
-    categories = ["jackets", "t-shirts", "pants"]
+    categories = ["jackets"]
 
     itemNum = 0
 
